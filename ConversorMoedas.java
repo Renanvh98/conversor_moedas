@@ -5,6 +5,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class ConversorMoedas {
@@ -12,8 +13,8 @@ public class ConversorMoedas {
     private static final String API_URL = "https://api.exchangerate-api.com/v4/latest/USD"; // Substitua pela URL da API
 
     public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-        
+        Scanner scanner = new Scanner(System.in);
+
         // Menu
         System.out.println("Selecione a conversão:");
         System.out.println("1. Dólar para Real");
@@ -67,9 +68,9 @@ public class ConversorMoedas {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpGet request = new HttpGet(url);
             HttpResponse response = httpClient.execute(request);
-            
             Gson gson = new Gson();
-            JsonObject jsonResponse = gson.fromJson(response.getEntity().getContent(), JsonObject.class);
+            InputStreamReader reader = new InputStreamReader(response.getEntity().getContent());
+            JsonObject jsonResponse = gson.fromJson(reader, JsonObject.class);
             JsonObject taxas = jsonResponse.getAsJsonObject("rates");
             double taxaConversao = taxas.get(moedaDestino).getAsDouble();
             return valor * taxaConversao;
